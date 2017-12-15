@@ -5,11 +5,14 @@
     <title>欢迎光临</title>
 </head>
 <body>
+<script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
+<div id="container"></div>
 <h1 align="center">我的网站JD！</h1>
 
-<div id=JD' style="margin:20px;padding:10px">
+<div id="JD" style="margin:20px;padding:10px">
     <input type="text" id="jd1" >合约1
     <input type="text" id="jd2" >合约2
+    <button type="button" id="sub" style="margin:20px">执行</button>
     <h3>合约价差</h3>
     <output  type='text' id='realtimeprice' ></output>
 </div>
@@ -22,18 +25,19 @@
 </div>
 
 
-<script type='text/javascript' src="http://hq.sinajs.cn/list=JD1801,JD1712,RB1801,RB1805"  id='jscode' charset='gb2312'></script>
-
+<script src="http://hq.sinajs.cn/list=JD0,JD1803,RB0,RB1810"  id='jscode' charset='gb2312'></script>
 <script>
+
     function reload(){
     var shuru1=document.getElementById('jscode').src.split('=')[1].split(',')[0];
     var shuru2=document.getElementById('jscode').src.split('=')[1].split(',')[1];
     var rbshuru1=document.getElementById('jscode').src.split('=')[1].split(',')[2];
     var rbshuru2=document.getElementById('jscode').src.split('=')[1].split(',')[3];
-    document.getElementById('jd1').value=shuru1
-    document.getElementById('jd2').value=shuru2
-    document.getElementById('rb1').value=rbshuru1
-    document.getElementById('rb2').value=rbshuru2
+    document.getElementById('jd1').placeholder=shuru1;
+    document.getElementById('jd2').placeholder=shuru2;
+    document.getElementById('rb1').placeholder=rbshuru1;
+    document.getElementById('rb2').placeholder=rbshuru2;
+    document.getElementById('')
 
     var code=document.getElementById('jscode');
     if(!code) return;
@@ -44,12 +48,42 @@
     code.charset='gb2312';
     document.body.appendChild(code);
     elements=[eval('hq_str_'+shuru1).split(','),eval('hq_str_'+shuru2).split(','),eval('hq_str_'+rbshuru1).split(','),eval('hq_str_'+rbshuru2).split(',')];//按逗号分割，并返回数组
-    document.getElementById('realtimeprice').value=[elements[0][6],elements[1][6],elements[0][6]-elements[1][6]];//【6】是最新价
-    document.getElementById('RBprice').value=[elements[2][6],elements[1][6],elements[3][6]-elements[1][6]]
+    document.getElementById('realtimeprice').value=[elements[0][6],elements[1][6],elements[0][6]-elements[1][6]];
+    document.getElementById('RBprice').value=[elements[2][6],elements[3][6],elements[2][6]-elements[3][6]]
 
+    if (elements[0][6]-elements[1][6]<-20000){  
+    alert('价差拉大')
     }
+    if (elements[0][6]-elements[1][6]>500){  
+    alert('价差减小')
+    }
+    }
+
+    alert('运行!');
+    $(document).ready(function(){
+        $('#sub').click(function(){
+            var shuru1=(document.getElementById('jd1').value)||(document.getElementById('jscode').src.split('=')[1].split(',')[0]);
+            var shuru2=(document.getElementById('jd2').value)||(document.getElementById('jscode').src.split('=')[1].split(',')[1]);
+            var rbshuru1=(document.getElementById('rb1').value)||(document.getElementById('jscode').src.split('=')[1].split(',')[2]);
+            var rbshuru2=(document.getElementById('rb2').value)||(document.getElementById('jscode').src.split('=')[1].split(',')[3]);
+            var src_new="http://hq.sinajs.cn/list="+shuru1+","+shuru2+","+rbshuru1+","+rbshuru2;
+            alert('执行修改')
+            $('#jscode').attr("src",src_new);
+        });
+    });
     reload();
-    setInterval(reload,2000);//每两秒钟更新一次
+
+    var mytime=new Date();
+    var time=mytime.getHours();
+    if ((time>9&&time<11.5)||(time>13.5&&time<15)||(time>21&&time<23.5)){
+    alert('运行时间段');
+    setInterval(reload,2000);
+    }
+    else{
+    alert('暂停运行时间段');
+    setInterval(reload,2000*3000);
+    }
+
 </script>
 
 </body>
